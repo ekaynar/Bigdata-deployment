@@ -15,22 +15,18 @@
 
 ----------------------------------------------------------------------------
 
-# BigTop OpenStack VM Provisioner
+# BigTop Bare-metal Provisioner
 
 ## Overview 
 
-This vagrant recipe is based on the vagrant recipe from `vagrant-puppet-vm` with added feature of vagrant-openstack-provider plugin. The plugin allows us to deploy a Hadoop cluster on an actual virtual environment as if we are deploying on local vagrant vms. It will spin up and provision the vm(s) for us.
+This vagrant recipe is based on the vagrant recipe from `vagrant-puppet-vm` with added feature of vagrant-openstack-provider plugin. The plugin allows us to deploy a Hadoop cluster on an actual baremetal. 
 
-The Vagrantfile creates a BigTop virtual Hadoop cluster on OpenStack by using BigTop puppet recipes and pulling from existing bigtop repositories
+The Vagrantfile creates a BigTop Bare-metal Big-Data cluster by using BigTop puppet recipes and pulling from existing bigtop repositories. Big-Data enviroment may include Hadoop, Hive, Mahout..etc.
 
 When the configuration is correctly set up in vagrantconfig.yaml, we should be able to deploy a cluster with on single command `vagrant up`
 
-This can be use:
 
-* to deploy BigTop Hadoop cluster(s) on an OpenStack cloud environment
-* to run BigTop smoke tests on the cluster
-
-## Usage
+## Set up the enviroment
 
 1) Install [vagrant-hostmanager plugin](https://github.com/smdahlen/vagrant-hostmanager) to better manage `/etc/hosts`
 
@@ -38,29 +34,13 @@ This can be use:
 vagrant plugin install vagrant-hostmanager
 ```
 
-2) Install [vagrant-openstack-provider](https://github.com/ggiamarchi/vagrant-openstack-provider) 
+2) Install [vagrant-managed-servers](https://github.com/tknerr/vagrant-managed-servers) 
 
 ```
-vagrant plugin install vagrant-openstack-provider
+vagrant plugin install vagrant-managed-servers
 ```
 
 3) Set up configuration 
-
-For now this is partically handled by openstack rc file and partically handled by vagrantconfig.yaml file
-
-Download rc file from Openstack Horizon dashbord Access & Security and run
-```
-source projectname-openrc.sh
-```
-You will also need to specify flavor, image_id, keypair_name, and FQDN (fully qualified domain name of your openstack environment) in vagrantconfig.yaml to successfully spin up a vm
-
-```
-flavor: "name of your choice of flavor" # e.g. m1.small 
-image_id: "UUID of your choice of image" # e.g. 8fddf8aa-1809-414d-b478-f93b8415f5f4
-keypair_name: "your key pair name on openstack" # e.g. cloud-key
-FQDN: "the fully qualified domain name of the environment"  
-key_path: "location of your private key" #e.g. ~/.ssh/cloud-key.pem 
-```
 
 There are other options in vagrantconfig.yaml that you can specify such as set number of vms in the cluster, and automatically run smoke tests
 
@@ -77,9 +57,11 @@ smoke_test_components: [mapredcue, pig]
 ```
 
 ## GO
+For sequencial Big-Data run:
 
 ```
-vagrant up --provider=openstack
+vagrant up --provider=managed
+vagrant provision
 ```
 
 For parallel provisioning run:
