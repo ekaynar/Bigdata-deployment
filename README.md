@@ -1,22 +1,19 @@
-## Usage
-1) Set up environment
+July 23th
 
-Install vagrant from official website
+private big data -> users keep the size. Not remove the large number of data from datacenter
+			     -> auditing data of users for small data sets
 
-If you want to provision machines in parallel, install gnu-parallel
 
-# for centos
-yum install parallel
-# for mac
-brew install parallel
-# for debian/ubuntu
-apt-get install parallel
 
-2) Install 'vagrant-hostmanager' plugin to better manage /etc/hosts
-```
-$ vagrant plugin install vagrant-hostmanager
-```
-2) Install [vagrant-managed-servers](https://github.com/tknerr/vagrant-managed-servers)
-```
-vagrant plugin install vagrant-managed-servers
-```
+
+Secure big data. 
+
+Most of these application do sorting.
+1)Characterize the application
+2)ozie deside how to open a vm by analyzing your application
+dynamically smart decisions
+economic paper, 
+
+complex application
+local diskc - vs volume attached
+
