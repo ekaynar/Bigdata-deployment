@@ -79,6 +79,10 @@ machines_hostnames = Array["server1.bu.edu","server1.bu.edu"]
 machines_aliases = Array[server1","server2"]
 ```
 
+Also you should define the master node such that:
+```
+hadoop_master = “server1.bu.edu”
+```
 ## GO
 For sequencial Big-Data deployment run:
 

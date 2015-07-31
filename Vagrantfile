@@ -28,13 +28,13 @@ jdk = CONF['jdk']
 repo = CONF['repo']
 
 #Define the master node hostname
-hadoop_master = "compute-32.moc.ne.edu"
+hadoop_master = “server1.bu.edu”
 
 
 #Dine the server ip adreesses and hostanmes in an array.
 machines_ips = Array["dummy","129.10.3.32","128.197.41.33"]
-machines_hostnames = Array["dummy","compute-32.moc.ne.edu","moc03.bu.edu"]
-machines_aliases = Array["dummy","compute-32","moc03"]
+machines_hostnames = Array["dummy","server1.bu.edu","server2.bu.edu"]
+machines_aliases = Array["dummy","server1","server2”]
 
 
 
@@ -71,13 +71,7 @@ Vagrant.configure("2") do |config|
           baremetal.vm.hostname = machines_hostnames[i]
           baremetal.hostmanager.aliases = machines_aliases[i]
           
-#          # Install rsync to sync folder from local machine.
-#          # rsync is not inctalled by default on centos 6.6  
-#          baremetal.vm.provision "shell", inline: <<-SHELL
-#            sudo yum install -y rsync
-#          SHELL
-#
-#
+
           # sync folder from local to vm using rsync
           baremetal.vm.synced_folder "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home", "/bigtop-home"
           baremetal.vm.synced_folder "~/Desktop/benchmark", "/benchmark" 
