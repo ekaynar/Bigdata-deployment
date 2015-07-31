@@ -28,7 +28,20 @@ When the configuration is correctly set up in vagrantconfig.yaml, we should be a
 
 ## Set up the enviroment
 
-1) Install [vagrant-hostmanager plugin](https://github.com/smdahlen/vagrant-hostmanager) to better manage `/etc/hosts`
+1) Install vagrant from [official website](https://www.vagrantup.com/)
+
+2) If you want to provision machines in parallel, install gnu-parallel
+'''
+# for centos
+yum install parallel 
+# for mac
+brew install parallel
+# for debian/ubuntu
+apt-get install parallel
+'''
+
+
+2) Install [vagrant-hostmanager plugin](https://github.com/smdahlen/vagrant-hostmanager) to better manage `/etc/hosts`
 
 ```
 vagrant plugin install vagrant-hostmanager
