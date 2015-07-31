@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
           
 
           # sync folder from local to vm using rsync
-          baremetal.vm.synced_folder "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home", "/bigtop-home"
+          baremetal.vm.synced_folder “../../bigtop-home", "/bigtop-home"
           baremetal.vm.synced_folder "~/Desktop/benchmark", "/benchmark" 
           baremetal.vm.provision :hostmanager
 
