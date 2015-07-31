@@ -19,7 +19,7 @@
 
 ## Overview 
 
-This vagrant recipe is based on the vagrant recipe from `vagrant-puppet-vm` with added feature of vagrant-openstack-provider plugin. The plugin allows us to deploy a Hadoop cluster on an actual baremetal. 
+This vagrant recipe is based on the vagrant recipe from `vagrant-puppet-vm` with added feature of vagrant-managed-servers plugin. The plugin allows us to deploy a Hadoop cluster on an actual baremetal servers. 
 
 The Vagrantfile creates a BigTop Bare-metal Big-Data cluster by using BigTop puppet recipes and pulling from existing bigtop repositories. Big-Data enviroment may include Hadoop, Hive, Mahout..etc.
 
