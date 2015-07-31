@@ -5,19 +5,38 @@ require "yaml"
 _config = YAML.load(File.open(File.join(File.dirname(__FILE__), "vagrantconfig.yaml"), File::RDONLY).read)
 CONF = _config
 
+# Read configurations from config file
 # number of instances
 num_instances = CONF['num_instances']
+
 # Whether to run smoke tests
 run_smoke_tests = CONF['run_smoke_tests'] 
+
 # Smoke test Components to run
 smoke_test_components = CONF['smoke_test_components'].join(',')
-components = CONF['components']
-distro = CONF['distro']
-jdk = CONF['jdk']
-repo = CONF['repo']
-hadoop_master = "moc01.bu.edu"
 
-machines_ips = Array["128.197.41.26","128.197.41.33"]
+# Components to install on machines
+components = CONF['components']
+
+# Which Linux Distribution to use. Right now only centos is tested
+distro = CONF['distro']
+
+# JDK package name
+jdk = CONF['jdk']
+
+# Repository
+repo = CONF['repo']
+
+#Define the master node hostname
+hadoop_master = "compute-32.moc.ne.edu"
+
+
+#Dine the server ip adreesses and hostanmes in an array.
+machines_ips = Array["dummy","129.10.3.32","128.197.41.33"]
+machines_hostnames = Array["dummy","compute-32.moc.ne.edu","moc03.bu.edu"]
+machines_aliases = Array["dummy","compute-32","moc03"]
+
+
 
 $script = <<SCRIPT
 service iptables stop
@@ -35,41 +54,54 @@ bigtop::jdk_package_name: #{jdk}
 EOF
 SCRIPT
 
+#echo "managed.server ="+ machines_ips[i]
 Vagrant.configure("2") do |config|
+    config.hostmanager.enabled = true
+    (1..num_instances).each do |i|
+      config.vm.define "baremetal#{i}" do |baremetal|
+          baremetal.vm.box = "tknerr/managed-server-dummy"
+          #baremetal.hostmanager.enabled = true
+          baremetal.ssh.pty = true
+          baremetal.vm.provider :managed do |managed, override|
+            managed.server = machines_ips[i]
+            override.ssh.username = "ukaynar"
+            override.ssh.private_key_path = "~/.ssh/id_rsa"
+          end
+          
+          baremetal.vm.hostname = machines_hostnames[i]
+          baremetal.hostmanager.aliases = machines_aliases[i]
+          
+#          # Install rsync to sync folder from local machine.
+#          # rsync is not inctalled by default on centos 6.6  
+#          baremetal.vm.provision "shell", inline: <<-SHELL
+#            sudo yum install -y rsync
+#          SHELL
+#
+#
+          # sync folder from local to vm using rsync
+          baremetal.vm.synced_folder "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home", "/bigtop-home"
+          baremetal.vm.synced_folder "~/Desktop/benchmark", "/benchmark" 
+          baremetal.vm.provision :hostmanager
 
-  (1..num_instances).each do |i|
-      
-      config.vm.box = "tknerr/managed-server-dummy"
-      #config.hostmanager.enabled = true
-      config.ssh.pty = true
-      config.vm.provider :managed do |managed, override|
-        managed.server = machines_ips[i]
-        override.ssh.username = "ukaynar"
-        override.ssh.private_key_path = "~/.ssh/id_rsa"
-      end
-      config.vm.synced_folder "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home", "/bigtop-home"
-      config.vm.synced_folder "~/Desktop/benchmark", "/benchmark" 
+          # st up environment, java to be exact to run puppet
+          baremetal.vm.provision "shell", inline: <<-SHELL
+            sudo yum install -y vim java-1.7.0-openjdk
+            sudo yum install -y words
+            sudo chown -R hdfs:hdfs /benchmark
+          SHELL
 
-      config.vm.provision "shell" do |s|
-        s.inline = "echo hello >> test.txt"
-      end
+          baremetal.vm.provision :shell do |shell|
+            shell.path = "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home/bigtop-deploy/vm/utils/setup-env-" + distro + ".sh"
+          end
+          baremetal.vm.provision "shell", inline: $script
 
-      config.vm.provision "shell", inline: <<-SHELL
-        sudo yum install -y vim java-1.7.0-openjdk
-        sudo yum install -y words
-
-      SHELL
-      config.vm.provision :shell do |shell|
-        shell.path = "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home/bigtop-deploy/vm/utils/setup-env-" + distro + ".sh"
-      end
-      config.vm.provision "shell", inline: $script
-
-    # run puppet to deploy hadoop
-      config.vm.provision :puppet do |puppet|
-        puppet.module_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet//modules"
-        puppet.manifests_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet/manifests/"
-        puppet.manifest_file = "site.pp"
-        puppet.options = '--debug'
-      end
-  end
+          # run puppet to deploy hadoop
+          baremetal.vm.provision :puppet do |puppet|
+            puppet.module_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet//modules"
+            puppet.manifests_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet/manifests/"
+            puppet.manifest_file = "site.pp"
+            puppet.options = '--debug'
+          end
+        end
+    end
 end

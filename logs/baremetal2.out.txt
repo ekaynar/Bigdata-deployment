@@ -1,0 +1,17 @@
+    baremetal2: The Berkshelf shelf is at "/Users/ugurkaynar/.berkshelf/vagrant-berkshelf/shelves/berkshelf20150730-33732-6mv8ai-baremetal2"
+==> baremetal2: Updating Vagrant's Berkshelf...
+==> baremetal2: Resolving cookbook dependencies...
+==> baremetal2: Using apache2 (3.1.0)
+==> baremetal2: Using apt (2.7.0)
+==> baremetal2: Vendoring apache2 (3.1.0) to /Users/ugurkaynar/.berkshelf/vagrant-berkshelf/shelves/berkshelf20150730-33732-6mv8ai-baremetal2/apache2
+==> baremetal2: Vendoring apt (2.7.0) to /Users/ugurkaynar/.berkshelf/vagrant-berkshelf/shelves/berkshelf20150730-33732-6mv8ai-baremetal2/apt
+==> baremetal2: Rsyncing folder: /Users/ugurkaynar/vagrant-managed-servers/bigtop-home/ => /bigtop-home
+There was an error when attemping to rsync a shared folder.
+Please inspect the error message below for more info.
+
+Host path: /Users/ugurkaynar/vagrant-managed-servers/bigtop-home/
+Guest path: /bigtop-home
+Error: bash: rsync: command not found
+rsync: connection unexpectedly closed (0 bytes received so far) [sender]
+rsync error: remote command not found (code 127) at /SourceCache/rsync/rsync-42/rsync/io.c(452) [sender=2.6.9]
+SUCCESS
