@@ -85,13 +85,13 @@ Vagrant.configure("2") do |config|
           SHELL
 
           baremetal.vm.provision :shell do |shell|
-            shell.path = "/Users/ugurkaynar/vagrant-managed-servers/bigtop-home/bigtop-deploy/vm/utils/setup-env-" + distro + ".sh"
+            shell.path = “/../../utils/setup-env-" + distro + ".sh"
           end
           baremetal.vm.provision "shell", inline: $script
 
           # run puppet to deploy hadoop
           baremetal.vm.provision :puppet do |puppet|
-            puppet.module_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet//modules"
+            puppet.module_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet/modules"
             puppet.manifests_path = "~/MOC/hadoop/bigtop-home/bigtop-deploy/puppet/manifests/"
             puppet.manifest_file = "site.pp"
             puppet.options = '--debug'
