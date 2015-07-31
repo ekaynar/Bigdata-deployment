@@ -43,66 +43,54 @@ apt-get install parallel
 
 
 
-2) Install [vagrant-hostmanager plugin](https://github.com/smdahlen/vagrant-hostmanager) to better manage `/etc/hosts`
+3) Install [vagrant-hostmanager plugin](https://github.com/smdahlen/vagrant-hostmanager) to better manage `/etc/hosts`
 
 ```
 vagrant plugin install vagrant-hostmanager
 ```
 
-2) Install [vagrant-managed-servers](https://github.com/tknerr/vagrant-managed-servers) 
+4) Install [vagrant-managed-servers](https://github.com/tknerr/vagrant-managed-servers) 
 
 ```
 vagrant plugin install vagrant-managed-servers
 ```
 
-3) Set up configuration 
+5) Set up configuration 
 
-There are other options in vagrantconfig.yaml that you can specify such as set number of vms in the cluster, and automatically run smoke tests
+There are options in vagrantconfig.yaml that you can specify such as set number of bare-metal machines in the cluster
 
 ```
 num_instance: 3
-rur_smoke_test: true
 ```
 
 You can also determine what components are being installed and tested
 
 ```
-components: [hadoop, yarn]
-smoke_test_components: [mapredcue, pig]
+components: [hadoop, yarn, hive]
+
+```
+
+6) Define the bare-metal servers ip addresses and hostnames.
+ In Vagrantfile you should specify the bare-metal servers ip addresses and hostnames such that:
+
+```
+machines_ips = Array["111.111.11.11","222.222.22.22"]
+machines_hostnames = Array["server1.bu.edu","server1.bu.edu"]
+machines_aliases = Array[server1","server2"]
 ```
 
 ## GO
-For sequencial Big-Data run:
+For sequencial Big-Data deployment run:
 
 ```
 vagrant up --provider=managed
 vagrant provision
 ```
 
-For parallel provisioning run:
+For parallel Big-Data deployment run:
 
 ```
 ./para-deploy.sh
 ```
 
-#### Parallel provisioning
 
-**This script is based on Joe Miller's para-vagrant.sh script please see NOTICE for more information**
-
-Script reads parameter `num_instance`, `run_smoke_tests` and `smoke_test_components` from `vagrantconfig.yaml` to determine how many machines to spin up and whether or not to run smoke tests and what components will be tested
-
-This script will spin up vms on openstack sequentially first, and then do the provisioning in parallel. Each guest machine will have it's own log file. And will generate a log file for smoke tests if `run_smoke_tests` set to true 
-
-There are some sketchy places in the code...(cuz I suck in bash) such as: 
-* handle unprintable ^M without destroying the format of log file. I haven't figure out how yet
-* use of `sed`: so OS X hates me, and it won't let me use `sed -r` so again I create another temporary file for the smoke tests log
-
-
-#### TODO
-
-* test installing all available components
-  * spark2 is not working, looks like a puppet problem
-* test all the provided smoke tests
-  * mahout smoke tests didn't run all the way throught
-* enable_local_repo
-* modify the code to make it more generic, I only tried this on Centos 6
