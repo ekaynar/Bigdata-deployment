@@ -20,9 +20,9 @@ describe VagrantPlugins::ManagedServers::Config do
 
   describe "overriding defaults" do
     it "should not default server if overridden" do
-      instance.server = "128.197.41.26"
+      instance.server = "foo"
       instance.finalize!
-      instance.server.should == "128.197.41.26"
+      instance.server.should == "foo"
     end
   end
 end
